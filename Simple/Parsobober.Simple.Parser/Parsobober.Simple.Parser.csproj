@@ -6,4 +6,8 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Parsobober.Simple.Lexer\Parsobober.Simple.Lexer.csproj" />
+    </ItemGroup>
+
 </Project>
