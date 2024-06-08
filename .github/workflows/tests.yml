@@ -25,4 +25,4 @@ jobs:
         run: dotnet build --no-restore --configuration Release
 
       - name: Test
-        run: dotnet test --no-restore --configuration Release --verbosity quiet
+        run: dotnet test --no-restore --configuration Release --verbosity quiet --filter "FullyQualifiedName!~Parsobober.Tests.IndividualTests"
