@@ -5,7 +5,7 @@ using Parsobober.DesignExtractor;
 using Parsobober.Pkb.Ast;
 using Parsobober.Pkb.Relations;
 using Parsobober.Pql.Parser;
-using Parsobober.Pql.Query.Organizer;
+using Parsobober.Pql.Query.Organizer.Another;
 using Parsobober.Simple.Lexer;
 using Parsobober.Simple.Parser;
 

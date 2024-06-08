@@ -42,6 +42,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parsobober.Pql.Query.Organi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parsobober.Pkb.Cfg", "src\Pkb\Parsobober.Pkb.Cfg\Parsobober.Pkb.Cfg.csproj", "{A2F57084-1610-4FD0-8FF4-BCAEBF5DCAC9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parsobober.Pql.Query.Organizer.Another", "src\QueryProcessor\Parsobober.Pql.Query.Organizer.Another\Parsobober.Pql.Query.Organizer.Another.csproj", "{916EFDC1-108D-4C6E-8AE5-D0301584C18F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -108,6 +110,10 @@ Global
 		{A2F57084-1610-4FD0-8FF4-BCAEBF5DCAC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A2F57084-1610-4FD0-8FF4-BCAEBF5DCAC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A2F57084-1610-4FD0-8FF4-BCAEBF5DCAC9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{916EFDC1-108D-4C6E-8AE5-D0301584C18F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{916EFDC1-108D-4C6E-8AE5-D0301584C18F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{916EFDC1-108D-4C6E-8AE5-D0301584C18F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{916EFDC1-108D-4C6E-8AE5-D0301584C18F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{D57C2D07-EA23-413A-85DF-B6E1786DF56B} = {440A8BEF-344E-43C9-9078-E25317708B4A}
@@ -125,5 +131,6 @@ Global
 		{E6E8B73A-E0D0-443F-B5CA-880BB95648E8} = {04EA456D-F461-411D-B114-B3DC2F95A0EF}
 		{70CAE9F7-1892-4F0D-9055-E5E942ACAA64} = {04EA456D-F461-411D-B114-B3DC2F95A0EF}
 		{A2F57084-1610-4FD0-8FF4-BCAEBF5DCAC9} = {8C1915BB-90DA-4367-9621-0A5CB3AC0F15}
+		{916EFDC1-108D-4C6E-8AE5-D0301584C18F} = {04EA456D-F461-411D-B114-B3DC2F95A0EF}
 	EndGlobalSection
 EndGlobal

@@ -10,4 +10,6 @@ public interface IAttributeQuery
     IEnumerable<IPkbDto> Do();
 
     IQueryDeclaration ApplyAttribute(IQueryDeclaration queryDeclaration);
+
+    IEnumerable<IPkbDto> ApplyAttribute(IEnumerable<IPkbDto> input);
 }
