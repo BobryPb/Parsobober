@@ -9,6 +9,7 @@ public class IterativeDfs : ICfgTraversalStrategy
         var visited = new HashSet<ICfgNode>();
         var stack = new Stack<ICfgNode>();
         var result = new List<ICfgNode>();
+        var removeStartNodeFromResult = true;
 
         stack.Push(startNode);
 
@@ -20,15 +21,26 @@ public class IterativeDfs : ICfgTraversalStrategy
             {
                 continue;
             }
+
             result.Add(node);
 
             foreach (var nextNode in node.Next)
             {
+                if (removeStartNodeFromResult && nextNode == startNode)
+                {
+                    removeStartNodeFromResult = false;
+                    continue;
+                }
                 if (!visited.Contains(nextNode))
                 {
                     stack.Push(nextNode);
                 }
             }
+        }
+
+        if (removeStartNodeFromResult)
+        {
+            result.Remove(startNode);
         }
 
         return result;
