@@ -75,6 +75,8 @@ public class QueryOrganizer : IQueryOrganizer
 
     private HashSet<IPkbDto> InnerOrganize(IDeclaration previousSelect, HashSet<IPkbDto> input)
     {
+        input = ApplyArgumentQueries(previousSelect, input);
+
         var query = _queries
             .FirstOrDefault(q =>
                 q is { Left: IDeclaration left, Right: IDeclaration } && left == previousSelect ||
@@ -82,47 +84,7 @@ public class QueryOrganizer : IQueryOrganizer
 
         if (query is null)
         {
-            var argumentQueries = _queries
-                .Where(q =>
-                    q is { Left: IDeclaration left, Right: not IDeclaration } && left == previousSelect ||
-                    q is { Left: not IDeclaration, Right: IDeclaration right } && right == previousSelect)
-                .ToList();
-
-            if (argumentQueries.Count == 0)
-            {
-                return input;
-            }
-
-            var argumentQueriesResults = argumentQueries
-                .Select(argumentQuery =>
-                {
-                    var innerResults = new HashSet<IPkbDto>();
-
-                    foreach (var dto in input)
-                    {
-                        var queryWithArgument = argumentQuery.ReplaceArgument(previousSelect, IArgument.Parse(dto));
-                        var queryResult = queryWithArgument.Do();
-                        if (!queryResult.Any())
-                        {
-                            continue;
-                        }
-
-                        innerResults.Add(dto);
-                    }
-
-                    return innerResults;
-                });
-
-            var results = argumentQueriesResults
-                .Aggregate((current, next) =>
-                {
-                    current.IntersectWith(next);
-                    return current;
-                });
-
-            _queries.RemoveAll(q => argumentQueries.Contains(q));
-
-            return results;
+            return input;
         }
 
         var result = new Dictionary<IPkbDto, List<IPkbDto>>();
@@ -155,7 +117,6 @@ public class QueryOrganizer : IQueryOrganizer
             .Where(x => x.Value.Any(v => next.Contains(v)))
             .Select(x => x.Key)
             .ToHashSet();
-
 
         return output;
     }
@@ -191,5 +152,53 @@ public class QueryOrganizer : IQueryOrganizer
         }
 
         return result;
+    }
+
+    private HashSet<IPkbDto> ApplyArgumentQueries(IDeclaration select, HashSet<IPkbDto> input)
+    {
+        var argumentQueries = _queries
+            .Where(q =>
+                q is { Left: IDeclaration left, Right: not IDeclaration } && left == select ||
+                q is { Left: not IDeclaration, Right: IDeclaration right } && right == select)
+            .ToList();
+
+        if (argumentQueries.Count <= 0)
+        {
+            return input;
+        }
+
+        var argumentQueriesResults = argumentQueries
+            .Select(argumentQuery =>
+            {
+                var innerResults = new HashSet<IPkbDto>();
+
+                foreach (var dto in input)
+                {
+                    var queryWithArgument = argumentQuery.ReplaceArgument(select, IArgument.Parse(dto));
+                    var queryResult = queryWithArgument.Do();
+                    if (!queryResult.Any())
+                    {
+                        continue;
+                    }
+
+                    innerResults.Add(dto);
+                }
+
+                return innerResults;
+            })
+            .ToList();
+
+        var results = argumentQueriesResults
+            .Aggregate((current, next) =>
+            {
+                current.IntersectWith(next);
+                return current;
+            });
+
+        _queries.RemoveAll(q => argumentQueries.Contains(q));
+
+        input = input.Intersect(results).ToHashSet();
+
+        return input;
     }
 }
