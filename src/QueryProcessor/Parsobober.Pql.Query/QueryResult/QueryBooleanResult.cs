@@ -17,5 +17,5 @@ internal class QueryBooleanResult(bool result) : IQueryResult
         }
     }
 
-    public string Execute() => result ? "TRUE" : "FALSE";
+    public string Execute() => result ? "true" : "false";
 }
