@@ -1,7 +1,7 @@
 using Parsobober.Pql.Query.Arguments;
 using Parsobober.Pql.Query.Queries.Abstractions;
 
-namespace Parsobober.Pql.Query.Organizer;
+namespace Parsobober.Pql.Query.Queries;
 
 public static class QueryDeclarationExtensions
 {
