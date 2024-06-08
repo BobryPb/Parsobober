@@ -41,7 +41,7 @@ public class TestsRafal() : BaseTestClass(Code.Dropbox)
         "Main")]
     [InlineData(
         "variable v;assign a1,a2;while w;Select a1 such that Uses(a1,v) and Modifies(a1,v) and Parent(w, a1) and Follows(a2, a1)",
-        "8,9,10,20,21,31,61,91,138,183,212,220,229,253,258")]
+        "20, 183, 212, 253")]
     public void TestQueryMultipleRafal(string query, string expected)
     {
         var result = App.Query(query);

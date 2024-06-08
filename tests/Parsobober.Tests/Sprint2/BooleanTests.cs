@@ -46,6 +46,6 @@ public class BooleanTests() : BaseTestClass(Code.ZadanieDomowe1)
     public void BooleanTest(string query, bool expected)
     {
         var result = App.Query(query);
-        result.Should().Be(expected ? "TRUE" : "FALSE");
+        result.Should().Be(expected ? "true" : "false");
     }
 }

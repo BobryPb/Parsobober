@@ -7,9 +7,9 @@ public class TestsPiotrek() : BaseTestClass(Code.Dropbox)
     [InlineData("if i1, i2;\nSelect i2 such that Parent*(i1, i2)",
         "15, 23, 34, 38, 51, 55, 66, 72, 76, 80, 86, 109, 160, 163, 166, 170, 173, 176, 224, 230, 237, 267")]
     [InlineData("procedure p;\nSelect p such that Calls(p, \"SS\")", "TT")]
-    [InlineData("procedure p;\nSelect BOOLEAN such that Calls(\"SS\", p)", "TRUE")]
+    [InlineData("procedure p;\nSelect BOOLEAN such that Calls(\"SS\", p)", "true")]
     [InlineData("assign a;\nSelect a such that Uses(a, \"line\")", "273")]
-    [InlineData("Select BOOLEAN such that Modifies(2, \"width\")", "TRUE")]
+    [InlineData("Select BOOLEAN such that Modifies(2, \"width\")", "true")]
     [InlineData("procedure p;\nSelect p such that Uses(p, \"edge\")",
         "Enlarge,Main,Rotate,Translate")]
     [InlineData("variable v;\nSelect v such that Modifies(30, v)", "width")]

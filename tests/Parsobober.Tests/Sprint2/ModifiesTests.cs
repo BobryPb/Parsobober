@@ -28,11 +28,11 @@ public class ModifiesTests() : BaseTestClass(Code.ZadanieDomowe1)
     }
 
     [Theory]
-    [InlineData("\"Circle\"", "\"a\"", "TRUE")]
-    [InlineData("\"Circle\"", "\"k\"", "TRUE")]
-    [InlineData("\"Rectangle\"", "\"k\"", "FALSE")]
-    [InlineData("\"Triangle\"", "\"a\"", "TRUE")]
-    [InlineData("\"Circle\"", "\"x\"", "FALSE")]
+    [InlineData("\"Circle\"", "\"a\"", "true")]
+    [InlineData("\"Circle\"", "\"k\"", "true")]
+    [InlineData("\"Rectangle\"", "\"k\"", "false")]
+    [InlineData("\"Triangle\"", "\"a\"", "true")]
+    [InlineData("\"Circle\"", "\"x\"", "false")]
     public void BooleanModifies_ProcedureName_VariableName(string procedureName, string variableName, string expected)
     {
         var query = $"\nSelect BOOLEAN such that Modifies ({procedureName}, {variableName})";

@@ -29,12 +29,12 @@ public class UsesTests() : BaseTestClass(Code.ZadanieDomowe1)
     }
 
     [Theory]
-    [InlineData("\"Circle\"", "\"a\"", "TRUE")]
-    [InlineData("\"Circle\"", "\"k\"", "TRUE")]
-    [InlineData("\"Rectangle\"", "\"k\"", "TRUE")]
-    [InlineData("\"Hexagon\"", "\"k\"", "FALSE")]
-    [InlineData("\"Triangle\"", "\"a\"", "TRUE")]
-    [InlineData("\"Circle\"", "\"x\"", "FALSE")]
+    [InlineData("\"Circle\"", "\"a\"", "true")]
+    [InlineData("\"Circle\"", "\"k\"", "true")]
+    [InlineData("\"Rectangle\"", "\"k\"", "true")]
+    [InlineData("\"Hexagon\"", "\"k\"", "false")]
+    [InlineData("\"Triangle\"", "\"a\"", "true")]
+    [InlineData("\"Circle\"", "\"x\"", "false")]
     public void BooleanUses_ProcedureName_VariableName(string procedureName, string variableName, string expected)
     {
         var query = $"\nSelect BOOLEAN such that Uses ({procedureName}, {variableName})";

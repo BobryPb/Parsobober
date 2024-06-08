@@ -31,10 +31,10 @@ public class NextTransitiveTests() : BaseTestClass(Code.ZadanieDomowe1)
     }
 
     [Theory]
-    [InlineData("1", "17", "TRUE")]
-    [InlineData("7", "12", "TRUE")]
-    [InlineData("7", "15", "TRUE")]
-    [InlineData("12", "9", "FALSE")]
+    [InlineData("1", "17", "true")]
+    [InlineData("7", "12", "true")]
+    [InlineData("7", "15", "true")]
+    [InlineData("12", "9", "false")]
     public void NextTransitiveTestBoolean(string lineLeft, string lineRight, string expected)
     {
         var query = $"Select BOOLEAN such that Next*({lineLeft}, {lineRight})";
