@@ -17,6 +17,7 @@
       <ProjectReference Include="..\QueryProcessor\Parsobober.Pql.Parser\Parsobober.Pql.Parser.csproj" />
       <ProjectReference Include="..\QueryProcessor\Parsobober.Pql.Query.Organizer.Another\Parsobober.Pql.Query.Organizer.Another.csproj" />
       <ProjectReference Include="..\QueryProcessor\Parsobober.Pql.Query.Organizer.Clueless\Parsobober.Pql.Query.Organizer.Clueless.csproj" />
+      <ProjectReference Include="..\QueryProcessor\Parsobober.Pql.Query.Organizer.Night\Parsobober.Pql.Query.Organizer.Night.csproj" />
       <ProjectReference Include="..\QueryProcessor\Parsobober.Pql.Query.Organizer\Parsobober.Pql.Query.Organizer.csproj" />
       <ProjectReference Include="..\SpaFronted\Parsobober.DesignExtractor\Parsobober.DesignExtractor.csproj" />
       <ProjectReference Include="..\SpaFronted\Parsobober.Simple.Parser\Parsobober.Simple.Parser.csproj" />
