@@ -46,7 +46,7 @@ public class Route
 
         if (_cache.TryGetValue(nextSelect, out var cached))
         {
-            var cacheResult = cached.All(c =>
+            var cacheResult = cached.Any(c =>
             {
                 var queryWithDoubleArgument = queryWithArgument.ReplaceArgument(nextSelect, IArgument.Parse(c));
                 var result = queryWithDoubleArgument.Do().Any();
