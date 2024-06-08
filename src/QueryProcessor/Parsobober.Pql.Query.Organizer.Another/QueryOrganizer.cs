@@ -82,31 +82,45 @@ public class QueryOrganizer : IQueryOrganizer
 
         if (query is null)
         {
-            var argumentQuery = _queries
-                .FirstOrDefault(q =>
+            var argumentQueries = _queries
+                .Where(q =>
                     q is { Left: IDeclaration left, Right: not IDeclaration } && left == previousSelect ||
-                    q is { Left: not IDeclaration, Right: IDeclaration right } && right == previousSelect);
+                    q is { Left: not IDeclaration, Right: IDeclaration right } && right == previousSelect)
+                .ToList();
 
-            if (argumentQuery is null)
+            if (argumentQueries.Count == 0)
             {
                 return input;
             }
 
-            var results = new HashSet<IPkbDto>();
-
-            foreach (var dto in input)
-            {
-                var queryWithArgument = argumentQuery.ReplaceArgument(previousSelect, IArgument.Parse(dto));
-                var queryResult = queryWithArgument.Do();
-                if (!queryResult.Any())
+            var argumentQueriesResults = argumentQueries
+                .Select(argumentQuery =>
                 {
-                    continue;
-                }
+                    var innerResults = new HashSet<IPkbDto>();
 
-                results.Add(dto);
-            }
+                    foreach (var dto in input)
+                    {
+                        var queryWithArgument = argumentQuery.ReplaceArgument(previousSelect, IArgument.Parse(dto));
+                        var queryResult = queryWithArgument.Do();
+                        if (!queryResult.Any())
+                        {
+                            continue;
+                        }
 
-            _queries.Remove(argumentQuery);
+                        innerResults.Add(dto);
+                    }
+
+                    return innerResults;
+                });
+
+            var results = argumentQueriesResults
+                .Aggregate((current, next) =>
+                {
+                    current.IntersectWith(next);
+                    return current;
+                });
+
+            _queries.RemoveAll(q => argumentQueries.Contains(q));
 
             return results;
         }
@@ -126,15 +140,22 @@ public class QueryOrganizer : IQueryOrganizer
         }
 
         var intersection = result.SelectMany(x => x.Value).ToHashSet();
+        var select = query.GetAnotherSide(previousSelect)!;
+
+        var attribute = _attributes.FirstOrDefault(a => a.Declaration == select);
+        if (attribute is not null)
+        {
+            intersection = attribute.ApplyAttribute(intersection).ToHashSet();
+        }
 
         _queries.Remove(query);
-        var select = query.GetAnotherSide(previousSelect)!;
         var next = InnerOrganize(select, intersection);
 
         var output = result
             .Where(x => x.Value.Any(v => next.Contains(v)))
             .Select(x => x.Key)
             .ToHashSet();
+
 
         return output;
     }
