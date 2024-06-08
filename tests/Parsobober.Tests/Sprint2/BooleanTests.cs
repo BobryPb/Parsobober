@@ -43,6 +43,14 @@ public class BooleanTests() : BaseTestClass(Code.ZadanieDomowe1)
                 stmt s; assign a;
                 Select BOOLEAN such that Parent(s, a) with s.stmt# = 8 and a.stmt# = 9
                 """, true)]
+    [InlineData("""
+                stmt s; assign a, a1; variable v;
+                Select BOOLEAN such that Parent(s, a) and Modifies(a1, v)
+                """, true)]
+    [InlineData("""
+                stmt s; assign a; variable v;
+                Select BOOLEAN such that Parent(s, a) and Modifies(a, v)
+                """, true)]
     public void BooleanTest(string query, bool expected)
     {
         var result = App.Query(query);

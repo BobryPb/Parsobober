@@ -8,7 +8,7 @@ public class TestsMateusz() : BaseTestClass(Code.Dropbox)
     [InlineData("procedure p;Select p such that Calls(\"Main\", p)",
         "Draw, Enlarge, Init, Move, Random, Shear, Shift, Shrink, Transform, Translate")]
     [InlineData("procedure p;Select p such that Calls*(p, \"Random\")", "Draw, Main, Rotate, Shrink, Translate")]
-    [InlineData("stmt s; constant c;Select s with s.stmt# = c", "1, 2, 3, 5, 8, 10, 11, 16, 20, 32, 83, 100")]
+    [InlineData("stmt s; constant c;Select s with s.stmt# = c.value", "1, 2, 3, 5, 8, 10, 11, 16, 20, 32, 83, 100")]
     [InlineData("Select BOOLEAN such that Uses(2, \"width\")", "false")]
     [InlineData("Select BOOLEAN such that Modifies(2, \"width\")", "true")]
     [InlineData("if i; while w;Select w such that Parent(i, w)",

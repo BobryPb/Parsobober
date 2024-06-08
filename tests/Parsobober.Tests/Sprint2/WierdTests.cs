@@ -44,6 +44,10 @@ public class WierdTests() : BaseTestClass(Code.ZadanieDomowe1)
                 stmt s; if i; assign a;
                 Select i such that Parent(s,i) and Parent(i,a) and Uses(a, "t") and Modifies(a, "a") and Parent(8,9)
                 """, "24")]
+    [InlineData("""
+                assign a, a1; variable v; stmt s;
+                Select a1 such that Parent(a,s) and Modifies(a,"x") and Follows(1,2) and Uses(a1, v)
+                """, "")]
     public void WierdTest(string query, string expected)
     {
         var result = App.Query(query);

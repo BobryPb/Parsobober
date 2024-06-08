@@ -97,7 +97,6 @@ public class TestsKlaudia() : BaseTestClass(Code.simpleCodeKM)
     [InlineData("assign a;", "a", "Modifies", "i", "Uses", "9")]
     [InlineData("assign a;", "a", "Modifies", "y", "Uses", "None")]
     [InlineData("assign a;", "a", "Modifies", "z", "Uses", "4")]
-    [InlineData("assign a;", "a", "Modifies", "y", "Uses", "None")]
     public void Modifies_Uses_Select(string declaration,
                                 string select,
                                 string relation,
