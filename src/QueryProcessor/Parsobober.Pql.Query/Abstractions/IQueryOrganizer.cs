@@ -12,4 +12,6 @@ public interface IQueryOrganizer
     IEnumerable<IPkbDto> Organize(IDeclaration select);
 
     bool OrganizeBoolean();
+    
+    IEnumerable<Dictionary<IDeclaration, IPkbDto>> OrganizerTuple(IEnumerable<IDeclaration> selects);
 }

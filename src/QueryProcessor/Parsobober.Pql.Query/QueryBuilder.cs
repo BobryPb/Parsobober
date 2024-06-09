@@ -98,6 +98,11 @@ internal partial class QueryBuilder(
 
         var organizer = queryOrganizerBuilder.Build();
 
+        if (_tuples.Count > 0)
+        {
+            return _queryResultFactory.Create(organizer.OrganizerTuple(_tuples.Select(t => _declarations[t])));
+        }
+
         if (Select is null)
         {
             return _queryResultFactory.Create(organizer.OrganizeBoolean());
@@ -119,9 +124,17 @@ internal partial class QueryBuilder(
         return this;
     }
 
+    private readonly List<string> _tuples = [];
+
     public IQueryBuilder AddTuple(string tuple)
     {
-        throw new NotImplementedException();
+        if (_queryResultFactory is not QueryTupleResult.Factory)
+        {
+            _queryResultFactory = new QueryTupleResult.Factory();
+        }
+
+        _tuples.Add(tuple);
+        return this;
     }
 
     public IQueryBuilder AddDeclaration(string declaration)

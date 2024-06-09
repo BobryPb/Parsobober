@@ -381,7 +381,7 @@ public class QueryOrganizer : IQueryOrganizer
             var (from, to) = _aliases.First();
             var fromInput = ApplyAttribute(from, from.ExtractFromContext(_context));
             var toInput = ApplyAttribute(to, to.ExtractFromContext(_context));
-            
+
             var pairs = EnumerableExtensions
                 .CartesianProduct([fromInput, toInput])
                 .Where(x => new PkbDtoComparer().Equals(x[0], x[1]));
@@ -397,5 +397,100 @@ public class QueryOrganizer : IQueryOrganizer
         var query = new Query(new Dictionary<IDeclaration, IPkbDto>(), _queries, _attributes, _aliases, _context);
 
         return query.Execute() is not null;
+    }
+
+    public IEnumerable<Dictionary<IDeclaration, IPkbDto>> OrganizerTuple(IEnumerable<IDeclaration> selects)
+    {
+        // special case with only aliases
+        if (_queries.Count == 0 && _aliases.Count == 1)
+        {
+            // only single alias
+            var (from, to) = _aliases.First();
+            var fromInput = ApplyAttribute(from, from.ExtractFromContext(_context).ToList());
+            var toInput = ApplyAttribute(to, to.ExtractFromContext(_context).ToList());
+
+            var pairs = EnumerableExtensions
+                .CartesianProduct([fromInput, toInput])
+                .Where(x => new PkbDtoComparer().Equals(x[0], x[1]));
+
+            throw new NotImplementedException();
+            // var result = (select == from) switch
+            // {
+            //     true => pairs.Select(x => x[0]),
+            //     false => pairs.Select(x => x[1]),
+            // };
+            //
+            // return result.Distinct();
+        }
+
+        if (_queries.Count == 0 && _aliases.Count > 1)
+        {
+            throw new NotImplementedException();
+        }
+
+        var select = selects.First();
+
+        var inputs = ApplyAttribute(select, select.ExtractFromContext(_context));
+
+        // there is no query with select
+        if (_queries.All(q => q.Left != select && q.Right != select))
+        {
+            if (OrganizeBoolean())
+            {
+                throw new NotImplementedException();
+                // return inputs;
+            }
+
+            return [];
+        }
+
+        var results = new List<Dictionary<IDeclaration, IPkbDto>>();
+        foreach (var input in inputs)
+        {
+            var table = new Dictionary<IDeclaration, IPkbDto> { { select, input } };
+            var query = new Query(table, _queries, _attributes, _aliases, _context);
+
+            if (query.Irresolvable())
+            {
+                var organizer = new QueryOrganizer(query.Queries.ToList(), _attributes, _context, _aliases);
+                if (organizer.OrganizeBoolean())
+                {
+                    results.Add(table);
+                }
+            }
+
+            try
+            {
+                var result = query.Execute()?.ToList();
+                if (result is not null && result.Count > 0)
+                {
+                    results.AddRange(result);
+                }
+            }
+            catch (Query.IrresolvableQuery e)
+            {
+                var organizer = new QueryOrganizer(e.Query.Queries.ToList(), _attributes, _context, _aliases);
+                if (organizer.OrganizeBoolean())
+                {
+                    results.Add(table);
+                }
+            }
+        }
+
+        // manualne objeście call.procName
+        var callAttributes = _attributes
+            .Where(a => a.Declaration is IStatementDeclaration.Call);
+
+        foreach (var a in callAttributes)
+        {
+            if (a is WithQueryFactory.ProcedureName p)
+            {
+                results = results
+                    .Where(x => x.Values.Any(v => v is Call c && c.ProcedureName == p.Name))
+                    .ToList();
+            }
+        }
+
+        return results;
     }
 }
