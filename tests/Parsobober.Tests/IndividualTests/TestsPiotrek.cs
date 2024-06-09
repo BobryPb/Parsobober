@@ -43,7 +43,7 @@ public class TestsPiotrek() : BaseTestClass(Code.Dropbox)
                 if i; while w; assign a; call c;
                 Select c such that Follows(i, w) and Follows(w, a) and Follows(a, c)
                 """,
-        "None")]
+        "none")]
     [InlineData("""
                 if i; while w; assign a; call c; variable v;
                 Select v such that Parent(i, w) and Follows*(a, c) and Follows*(c, i) and Modifies(c, v)

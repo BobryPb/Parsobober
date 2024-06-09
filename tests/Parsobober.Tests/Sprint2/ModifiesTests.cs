@@ -49,7 +49,7 @@ public class ModifiesTests() : BaseTestClass(Code.ZadanieDomowe1)
     [InlineData("while w;", "w", "\"a\"", "18, 23")]
     // assign
     [InlineData("assign a;", "a", "\"a\"", "2, 13, 14, 26")]
-    [InlineData("assign a;", "a", "\"x\"", "None")]
+    [InlineData("assign a;", "a", "\"x\"", "none")]
     // if
     [InlineData("if i;", "i", "\"t\"", "8")]
     [InlineData("if i;", "i", "\"a\"", "8, 24")]
@@ -75,13 +75,13 @@ public class ModifiesDeepTests() : BaseTestClass(Code.CallCode)
     [InlineData("while w;", "w", "\"a\"", "6, 12, 15")]
     // assign
     [InlineData("assign a;", "a", "\"a\"", "10, 11, 18")]
-    [InlineData("assign a;", "a", "\"x\"", "None")]
+    [InlineData("assign a;", "a", "\"x\"", "none")]
     // if
-    [InlineData("if i;", "i", "\"t\"", "None")]
+    [InlineData("if i;", "i", "\"t\"", "none")]
     [InlineData("if i;", "i", "\"a\"", "5, 7, 16")]
     // call
     [InlineData("call c;", "c", "\"a\"", "2, 4, 8, 9, 13")]
-    [InlineData("call c;", "c", "\"t\"", "None")]
+    [InlineData("call c;", "c", "\"t\"", "none")]
     public void Modifies_Statement_VariableName(string declaration, string select, string varName, string expected)
     {
         var query = $"{declaration}\nSelect {select} such that Modifies ({select}, {varName})";

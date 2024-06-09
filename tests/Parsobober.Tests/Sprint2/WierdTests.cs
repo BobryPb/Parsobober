@@ -27,7 +27,7 @@ public class WierdTests() : BaseTestClass(Code.ZadanieDomowe1)
     [InlineData("""
                 stmt s; assign a; while w;
                 Select a such that Parent(w, s) with w.stmt# = 1 and s.stmt# = 2
-                """, "None")]
+                """, "none")]
     [InlineData("""
                 stmt s; assign a; while w;
                 Select a such that Parent(w, s) with w.stmt# = 10 and s.stmt# = 11
@@ -47,7 +47,7 @@ public class WierdTests() : BaseTestClass(Code.ZadanieDomowe1)
     [InlineData("""
                 assign a, a1; variable v; stmt s;
                 Select a1 such that Parent(a,s) and Modifies(a,"x") and Follows(1,2) and Uses(a1, v)
-                """, "None")]
+                """, "none")]
     public void WierdTest(string query, string expected)
     {
         var result = App.Query(query);

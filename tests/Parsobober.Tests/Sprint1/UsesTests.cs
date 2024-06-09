@@ -4,16 +4,16 @@ public class UsesTests() : BaseTestClass(Code.ShortStatementsOnly)
 {
     [Theory]
     // stmt
-    [InlineData("stmt s;", "s", "\"k\"", "None")]
+    [InlineData("stmt s;", "s", "\"k\"", "none")]
     [InlineData("stmt s;", "s", "\"a\"", "1,2,4")]
     [InlineData("stmt s;", "s", "\"p\"", "1,4,5")]
     [InlineData("stmt s;", "s", "\"m\"", "1,6")]
     // while
-    [InlineData("while w;", "w", "\"k\"", "None")]
+    [InlineData("while w;", "w", "\"k\"", "none")]
     [InlineData("while w;", "w", "\"c\"", "1")]
     [InlineData("while w;", "w", "\"g\"", "1")]
     // assign
-    [InlineData("assign a;", "a", "\"k\"", "None")]
+    [InlineData("assign a;", "a", "\"k\"", "none")]
     [InlineData("assign a;", "a", "\"p\"", "5")]
     public void Uses_Statement_VariableName(string declaration, string select, string varName, string expected)
     {

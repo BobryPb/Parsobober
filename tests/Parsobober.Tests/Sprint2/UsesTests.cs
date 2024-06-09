@@ -54,7 +54,7 @@ public class UsesDeepTests() : BaseTestClass(Code.CallCode)
     [InlineData("while w;", "w", "\"a\"", "6, 12, 15")]
     // assign
     [InlineData("assign a;", "a", "\"a\"", "3, 18")]
-    [InlineData("assign a;", "a", "\"x\"", "None")]
+    [InlineData("assign a;", "a", "\"x\"", "none")]
     // if
     [InlineData("if i;", "i", "\"t\"", "5, 7, 16")]
     [InlineData("if i;", "i", "\"a\"", "5, 7, 16")]

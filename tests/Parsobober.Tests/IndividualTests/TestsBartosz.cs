@@ -65,7 +65,7 @@ public class TestsBartosz() : BaseTestClass(Code.Dropbox)
                 stmt s1, s2;
                 Select s1 such that Parent*(s1, s2) and Follows*(s1, s2)
                 """,
-        "None")]
+        "none")]
     [InlineData("""
                 assign a; call c; variable v;
                 Select c such that Modifies(c, v) and Uses(a, v)

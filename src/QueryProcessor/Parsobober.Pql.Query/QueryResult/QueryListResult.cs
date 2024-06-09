@@ -23,7 +23,7 @@ internal class QueryListResult(IEnumerable<IPkbDto> query) : IQueryResult
     {
         if (!query.Any())
         {
-            return "None";
+            return "none";
         }
 
         var stringBuilder = new StringBuilder();

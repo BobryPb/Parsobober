@@ -13,15 +13,15 @@ public class WithTests() : BaseTestClass(Code.ZadanieDomowe1_1)
         "Hexagon, Rectangle, Triangle")]
     [InlineData("call c; variable v;Select v with c.procName = v.varName",
         "Triangle")]
-    [InlineData("constant c; variable v;Select c with c.value = v.varName", "None")]
-    // [InlineData("constant c; call c2;Select c with c.value = c2.procName", "None")]
-    [InlineData("constant c; procedure p;Select c with c.value = p.procName", "None")]
+    [InlineData("constant c; variable v;Select c with c.value = v.varName", "none")]
+    // [InlineData("constant c; call c2;Select c with c.value = c2.procName", "none")]
+    [InlineData("constant c; procedure p;Select c with c.value = p.procName", "none")]
     [InlineData("variable x,y;Select x such that Uses(\"Hexagon\", x) with x.varName = y.varName",
         "a, hexagon, t")]
-    [InlineData("constant c; procedure p;Select BOOLEAN with c.value = p.procName", "FALSE")]
-    [InlineData("variable v; procedure p;Select BOOLEAN with v.varName = p.procName", "TRUE")]
+    [InlineData("constant c; procedure p;Select BOOLEAN with c.value = p.procName", "false")]
+    [InlineData("variable v; procedure p;Select BOOLEAN with v.varName = p.procName", "true")]
     [InlineData("variable v; procedure p;Select BOOLEAN with v.varName = p.procName and p.procName = \"qweqwe\"",
-        "FALSE")]
+        "false")]
     [InlineData("variable v; procedure p;Select p with v.varName = p.procName and p.procName = \"Triangle\"",
         "Triangle")]
     [InlineData("variable v; procedure p;Select v with v.varName = p.procName and p.procName = \"Triangle\"",
@@ -35,7 +35,7 @@ public class WithTests() : BaseTestClass(Code.ZadanieDomowe1_1)
         "Triangle")]
     [InlineData("variable v; procedure p; call c;" +
                 "Select BOOLEAN with v.varName = p.procName and v.varName = c.procName",
-        "TRUE")]
+        "true")]
     public void WithTest(string query, string expected)
     {
         var result = App.Query(query);

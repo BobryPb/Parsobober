@@ -6,11 +6,11 @@ public class TestsKlaudia() : BaseTestClass(Code.simpleCodeKM)
     # region Test - 1 relation
 
     [Theory]
-    [InlineData("stmt s;", "s", "Follows", "1", "None")]
-    //[InlineData("stmt s;", "4", "Follows", "s", "None")]
+    [InlineData("stmt s;", "s", "Follows", "1", "none")]
+    //[InlineData("stmt s;", "4", "Follows", "s", "none")]
     [InlineData("assign a;", "a", "Follows", "7", "6")]
     [InlineData("stmt s;", "s", "Parent", "5", "3")]
-    //[InlineData("stmt s;", "2", "Parent", "s", "None")]
+    //[InlineData("stmt s;", "2", "Parent", "s", "none")]
     public void FollowsParent_Select_Line(string declaration,
                                 string select,
                                 string relation,
@@ -95,7 +95,7 @@ public class TestsKlaudia() : BaseTestClass(Code.simpleCodeKM)
 
     [Theory]
     [InlineData("assign a;", "a", "Modifies", "i", "Uses", "9")]
-    [InlineData("assign a;", "a", "Modifies", "y", "Uses", "None")]
+    [InlineData("assign a;", "a", "Modifies", "y", "Uses", "none")]
     [InlineData("assign a;", "a", "Modifies", "z", "Uses", "4")]
     public void Modifies_Uses_Select(string declaration,
                                 string select,
@@ -111,7 +111,7 @@ public class TestsKlaudia() : BaseTestClass(Code.simpleCodeKM)
 
     [Theory]
     [InlineData("while w;assign a;", "a", "Modifies", "z", "Parent", "w", "4")]
-    [InlineData("while w;assign a;", "a", "Modifies", "x", "Parent", "w", "None")]
+    [InlineData("while w;assign a;", "a", "Modifies", "x", "Parent", "w", "none")]
     //[InlineData("while w;assign a;", "a", "Modifies", "x", "Follows", "y", "1")]
     public void Modifies_Parent_Select(string declaration,
                                         string select,
@@ -127,7 +127,7 @@ public class TestsKlaudia() : BaseTestClass(Code.simpleCodeKM)
     }
 
     [Theory]
-    [InlineData("while w;assign a;", "a", "Parent", "w", "Modifies", "g", "None")]
+    [InlineData("while w;assign a;", "a", "Parent", "w", "Modifies", "g", "none")]
     [InlineData("while w;assign a;", "a", "Parent", "w", "Modifies", "y", "10")]
     public void Parent_Modifies_Select(string declaration,
                                         string select,
@@ -144,7 +144,7 @@ public class TestsKlaudia() : BaseTestClass(Code.simpleCodeKM)
 
     [Theory]
     [InlineData("while w;assign a;", "a", "Uses", "y", "Parent", "w", "4")]
-    //[InlineData("while w;assign a;", "a", "Uses", "y", "Parent", "i", "None")]
+    //[InlineData("while w;assign a;", "a", "Uses", "y", "Parent", "i", "none")]
     public void Uses_Parent_Select(string declaration,
                                    string select,
                                    string relation,
