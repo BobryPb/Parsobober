@@ -20,6 +20,22 @@ public class WithTests() : BaseTestClass(Code.ZadanieDomowe1_1)
         "a, hexagon, t")]
     [InlineData("constant c; procedure p;Select BOOLEAN with c.value = p.procName", "FALSE")]
     [InlineData("variable v; procedure p;Select BOOLEAN with v.varName = p.procName", "TRUE")]
+    [InlineData("variable v; procedure p;Select BOOLEAN with v.varName = p.procName and p.procName = \"qweqwe\"",
+        "FALSE")]
+    [InlineData("variable v; procedure p;Select p with v.varName = p.procName and p.procName = \"Triangle\"",
+        "Triangle")]
+    [InlineData("variable v; procedure p;Select v with v.varName = p.procName and p.procName = \"Triangle\"",
+        "Triangle")]
+    [InlineData("variable v; procedure p;Select v with v.varName = p.procName and v.varName = \"Triangle\"",
+        "Triangle")]
+    [InlineData("variable v; procedure p;Select p with v.varName = p.procName and v.varName = \"Triangle\"",
+        "Triangle")]
+    [InlineData("variable v; procedure p; call c;" +
+                "Select p with v.varName = p.procName and v.varName = c.procName",
+        "Triangle")]
+    [InlineData("variable v; procedure p; call c;" +
+                "Select BOOLEAN with v.varName = p.procName and v.varName = c.procName",
+        "TRUE")]
     public void WithTest(string query, string expected)
     {
         var result = App.Query(query);

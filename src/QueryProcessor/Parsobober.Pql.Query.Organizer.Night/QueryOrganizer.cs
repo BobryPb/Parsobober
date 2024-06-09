@@ -275,8 +275,8 @@ public class QueryOrganizer : IQueryOrganizer
         {
             // only single alias
             var (from, to) = _aliases.First();
-            var fromInput = from.ExtractFromContext(_context).ToList();
-            var toInput = to.ExtractFromContext(_context).ToList();
+            var fromInput = ApplyAttribute(from, from.ExtractFromContext(_context).ToList());
+            var toInput = ApplyAttribute(to, to.ExtractFromContext(_context).ToList());
 
             var pairs = EnumerableExtensions
                 .CartesianProduct([fromInput, toInput])
@@ -379,9 +379,9 @@ public class QueryOrganizer : IQueryOrganizer
         {
             // only single alias
             var (from, to) = _aliases.First();
-            var fromInput = from.ExtractFromContext(_context).ToList();
-            var toInput = to.ExtractFromContext(_context).ToList();
-
+            var fromInput = ApplyAttribute(from, from.ExtractFromContext(_context));
+            var toInput = ApplyAttribute(to, to.ExtractFromContext(_context));
+            
             var pairs = EnumerableExtensions
                 .CartesianProduct([fromInput, toInput])
                 .Where(x => new PkbDtoComparer().Equals(x[0], x[1]));

@@ -88,6 +88,11 @@ public class TestsBartosz() : BaseTestClass(Code.Dropbox)
         "Draw, Random, Shrink, Translate")]
     [InlineData("""
                 call c; procedure p; stmt s;
+                Select p such that Modifies(p, "left") and Parent(s, c) with c.procName=p.procName and p.procName = "Draw"
+                """,
+        "Draw")]
+    [InlineData("""
+                call c; procedure p; stmt s;
                 Select p such that Modifies(p, "left") and Parent(s, c)
                 """,
         "Draw,Init,Main,Random,Rotate,Shrink,Translate")]
@@ -106,11 +111,11 @@ public class TestsBartosz() : BaseTestClass(Code.Dropbox)
                 Select v such that Parent(w1, w2) and Modifies(w2, v) and Uses(i, v) and Parent*(i, w1)
                 """,
         "area, decrement, depth, edge, green, height, incre, length, notmove, pink, pixel, semi, temporary, tmp, weight, width, x1, x2, y1, y2")]
-    //[InlineData("""
-    //           stmt s; while w; variable v; call c;
-    //            Select s such that Modifies(c, v) and Uses(c, v) and Modifies(s, v) such that Follows(s, c) and Parent(w, c)
-    //            """,
-    //    "12, 21, 221, 306")]
+    [InlineData("""
+                stmt s; while w; variable v; call c;
+                Select s such that Modifies(c, v) and Uses(c, v) and Modifies(s, v) such that Follows(s, c) and Parent(w, c)
+                """,
+        "12, 21, 221, 306")]
     [InlineData("""
                 stmt s; while w; call c1, c2;
                 Select s such that Follows*(w, s) and Parent*(w, c1) and Parent*(s, c2)
