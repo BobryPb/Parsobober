@@ -23,6 +23,8 @@ public interface IQueryBuilder
     /// </summary>
     IQueryBuilder SetBoolean();
 
+    IQueryBuilder AddTuple(string tuple);
+
     /// <summary>
     /// Adds a declaration to the PQL query.
     /// </summary>

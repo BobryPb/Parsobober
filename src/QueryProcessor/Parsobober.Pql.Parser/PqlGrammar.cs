@@ -27,10 +27,28 @@ internal class PqlGrammar(IQueryBuilder queryBuilder)
         return queryBuilder;
     }
 
+    [Production(
+        "select-clause : Declaration* Select[d] LeftAngleBracket[d] tuple-element and-tuple-element* RightAngleBracket[d] condition-clause+")]
+    public IQueryBuilder TupleClause(
+        List<Token<PqlToken>> declaration, // declarations
+        IQueryBuilder element,
+        List<IQueryBuilder> _1,
+        List<IQueryBuilder> _2 // condition-clauses
+    )
+    {
+        declaration.ForEach(d => queryBuilder.AddDeclaration(d.Value));
+        return queryBuilder;
+    }
+
+    [Production("and-tuple-element : Coma[d] Reference")]
+    public IQueryBuilder TupleElement(Token<PqlToken> reference) => queryBuilder.AddTuple(reference.Value);
+
+    [Production("tuple-element : Reference")]
+    public IQueryBuilder TupleReferences(Token<PqlToken> reference) => queryBuilder.AddTuple(reference.Value);
+
     [Production("condition-clause : such-that-clause")]
     [Production("condition-clause : with-clause")]
     public IQueryBuilder ConditionClause(IQueryBuilder relation) => relation;
-
 
     #region With Clause
 

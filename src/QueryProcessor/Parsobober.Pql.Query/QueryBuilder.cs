@@ -119,6 +119,11 @@ internal partial class QueryBuilder(
         return this;
     }
 
+    public IQueryBuilder AddTuple(string tuple)
+    {
+        throw new NotImplementedException();
+    }
+
     public IQueryBuilder AddDeclaration(string declaration)
     {
         var split = declaration.Split();

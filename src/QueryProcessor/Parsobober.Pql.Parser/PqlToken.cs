@@ -14,6 +14,12 @@ internal static class PqlAuxiliaryTokens
 
 internal enum PqlToken
 {
+    [Lexeme("<")]
+    LeftAngleBracket,
+    
+    [Lexeme(">")]
+    RightAngleBracket,
+    
     #region Separators
 
     [Lexeme(@"\(")]

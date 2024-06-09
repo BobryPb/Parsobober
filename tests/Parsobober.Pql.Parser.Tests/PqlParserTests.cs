@@ -486,4 +486,29 @@ public class PqlParserTests
         query.Should().Be(queryMock.Object);
         builderMock.Verify(b => b.AddDeclaration(declarations));
     }
+
+    [Theory]
+    [InlineData("stmt s, s1, s2;", "s, s1, s2")]
+    public void Tuple(string declarations, string tuple)
+    {
+        // Arrange
+        var builderMock = new Mock<IQueryBuilder>();
+        var queryMock = new Mock<IQueryResult>();
+        var parser = new PqlParser(builderMock.Object);
+        var queryString = $"{declarations} Select <{tuple}> such that Parent(s, s1)";
+
+        builderMock.Setup(b => b.Build()).Returns(queryMock.Object);
+
+        // Act
+        var query = parser.Parse(queryString);
+
+        // Assert
+        query.Should().NotBeNull();
+        query.Should().Be(queryMock.Object);
+        builderMock.Verify(b => b.AddDeclaration(declarations));
+        foreach (var x in tuple.Split(",").Select(x => x.Trim()))
+        {
+            builderMock.Verify(b => b.AddTuple(x));
+        }
+    }
 }
