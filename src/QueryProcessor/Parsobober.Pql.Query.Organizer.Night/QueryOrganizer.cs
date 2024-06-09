@@ -6,6 +6,7 @@ using Parsobober.Pql.Query.Arguments;
 using Parsobober.Pql.Query.Queries;
 using Parsobober.Shared;
 using Parsobober.Pql.Query.Queries.Abstractions;
+using Alias = (Parsobober.Pql.Query.Arguments.IDeclaration, Parsobober.Pql.Query.Arguments.IDeclaration);
 
 namespace Parsobober.Pql.Query.Organizer.Night;
 
@@ -179,14 +180,17 @@ public class QueryOrganizer : IQueryOrganizer
     private readonly List<IQueryDeclaration> _queries;
     private readonly List<IAttributeQuery> _attributes;
     private readonly IDtoProgramContextAccessor _context;
+    private readonly List<Alias> _aliases;
 
     internal QueryOrganizer(
         List<IQueryDeclaration> queries,
         List<IAttributeQuery> attributes,
-        IDtoProgramContextAccessor context
+        IDtoProgramContextAccessor context,
+        List<Alias> aliases
     )
     {
         _context = context;
+        _aliases = aliases;
         _queries = queries;
         _attributes = attributes;
     }
@@ -204,6 +208,32 @@ public class QueryOrganizer : IQueryOrganizer
 
     public IEnumerable<IPkbDto> Organize(IDeclaration select)
     {
+        // special case with only aliases
+        if (_queries.Count == 0 && _aliases.Count == 1)
+        {
+            // only single alias
+            var (from, to) = _aliases.First();
+            var fromInput = from.ExtractFromContext(_context).ToList();
+            var toInput = to.ExtractFromContext(_context).ToList();
+
+            var pairs = EnumerableExtensions
+                .CartesianProduct([fromInput, toInput])
+                .Where(x => new PkbDtoComparer().Equals(x[0], x[1]));
+
+            var result = (select == from) switch
+            {
+                true => pairs.Select(x => x[0]),
+                false => pairs.Select(x => x[1]),
+            };
+
+            return result.Distinct();
+        }
+
+        if (_queries.Count == 0 && _aliases.Count > 1)
+        {
+            throw new NotImplementedException();
+        }
+
         var inputs = ApplyAttribute(select, select.ExtractFromContext(_context));
 
         // there is no query with select
@@ -225,7 +255,7 @@ public class QueryOrganizer : IQueryOrganizer
 
             if (query.Irresolvable())
             {
-                var organizer = new QueryOrganizer(query.Queries.ToList(), _attributes, _context);
+                var organizer = new QueryOrganizer(query.Queries.ToList(), _attributes, _context, _aliases);
                 if (organizer.OrganizeBoolean())
                 {
                     results.Add(table);
@@ -242,7 +272,7 @@ public class QueryOrganizer : IQueryOrganizer
             }
             catch (Query.IrresolvableQuery e)
             {
-                var organizer = new QueryOrganizer(e.Query.Queries.ToList(), _attributes, _context);
+                var organizer = new QueryOrganizer(e.Query.Queries.ToList(), _attributes, _context, _aliases);
                 if (organizer.OrganizeBoolean())
                 {
                     results.Add(table);
@@ -250,12 +280,35 @@ public class QueryOrganizer : IQueryOrganizer
             }
         }
 
-        var selectValues = results
+
+        var selectValues = ApplyAliases(results)
             .Select(x => x[select])
             .ToHashSet();
 
         return selectValues;
     }
+
+    private IEnumerable<Dictionary<IDeclaration, IPkbDto>> ApplyAliases(
+        IEnumerable<Dictionary<IDeclaration, IPkbDto>> results
+    ) => results
+        .Where(d =>
+        {
+            foreach (var alias in _aliases)
+            {
+                var (from, to) = alias;
+                if (!d.TryGetValue(from, out var fromValue) || !d.TryGetValue(to, out var toValue))
+                {
+                    continue;
+                }
+
+                if (new PkbDtoComparer().Equals(fromValue, toValue))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        });
 
     public bool OrganizeBoolean()
     {
@@ -266,6 +319,26 @@ public class QueryOrganizer : IQueryOrganizer
             var select = (rootQuery.Left as IDeclaration)!;
             var result = Organize(select);
             return result.Any();
+        }
+
+        // special case with only aliases
+        if (_queries.Count == 0 && _aliases.Count == 1)
+        {
+            // only single alias
+            var (from, to) = _aliases.First();
+            var fromInput = from.ExtractFromContext(_context).ToList();
+            var toInput = to.ExtractFromContext(_context).ToList();
+
+            var pairs = EnumerableExtensions
+                .CartesianProduct([fromInput, toInput])
+                .Where(x => new PkbDtoComparer().Equals(x[0], x[1]));
+
+            return pairs.Any();
+        }
+
+        if (_queries.Count == 0 && _aliases.Count > 1)
+        {
+            throw new NotImplementedException();
         }
 
         var query = new Query(new Dictionary<IDeclaration, IPkbDto>(), _queries, _attributes);

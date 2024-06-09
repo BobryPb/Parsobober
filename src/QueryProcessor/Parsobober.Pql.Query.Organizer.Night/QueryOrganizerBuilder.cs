@@ -14,14 +14,17 @@ public class QueryOrganizerBuilder(IDtoProgramContextAccessor context, IComparer
     private readonly List<IAttributeQuery> _attributes = [];
     public void AddAttribute(IAttributeQuery attributeQuery) => _attributes.Add(attributeQuery);
 
+    private readonly List<(IDeclaration, IDeclaration)> _aliases = [];
+
     public void AddAlias((IDeclaration, IDeclaration) alias)
     {
+        _aliases.Add(alias);
     }
 
     public IQueryOrganizer Build()
     {
 #if DEBUG
-        return new QueryOrganizer(_queries.ToList(), _attributes.ToList(), context);
+        return new QueryOrganizer(_queries.ToList(), _attributes.ToList(), context, _aliases);
 #else
         return new QueryOrganizer(_queries, _attributes, context);
 #endif
