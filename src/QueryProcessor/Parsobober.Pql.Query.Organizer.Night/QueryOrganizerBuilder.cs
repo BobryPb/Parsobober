@@ -26,7 +26,7 @@ public class QueryOrganizerBuilder(IDtoProgramContextAccessor context, IComparer
 #if DEBUG
         return new QueryOrganizer(_queries.ToList(), _attributes.ToList(), context, _aliases);
 #else
-        return new QueryOrganizer(_queries, _attributes, context);
+        return new QueryOrganizer(_queries, _attributes, context, _aliases);
 #endif
     }
 }
