@@ -87,6 +87,11 @@ public class TestsBartosz() : BaseTestClass(Code.Dropbox)
                 """,
         "Draw, Random, Shrink, Translate")]
     [InlineData("""
+                call c; procedure p; stmt s;
+                Select p such that Modifies(p, "left") and Parent(s, c)
+                """,
+        "Draw,Init,Main,Random,Rotate,Shrink,Translate")]
+    [InlineData("""
                 assign a1, a2; variable v;
                 Select v such that Modifies(a1, v) and Uses(a2, v) and Follows(a1, a2)
                 """,

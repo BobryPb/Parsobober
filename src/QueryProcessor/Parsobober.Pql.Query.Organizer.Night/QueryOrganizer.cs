@@ -7,7 +7,7 @@ using Parsobober.Pql.Query.Queries;
 using Parsobober.Shared;
 using Parsobober.Pql.Query.Queries.Abstractions;
 using Parsobober.Pql.Query.Queries.With;
-using Alias = (Parsobober.Pql.Query.Arguments.IDeclaration, Parsobober.Pql.Query.Arguments.IDeclaration);
+using Alias = (Parsobober.Pql.Query.Arguments.IDeclaration from, Parsobober.Pql.Query.Arguments.IDeclaration to);
 
 namespace Parsobober.Pql.Query.Organizer.Night;
 
@@ -19,15 +19,21 @@ public class Query
     private readonly Dictionary<IDeclaration, IPkbDto> _table;
     private readonly ImmutableHashSet<IQueryDeclaration> _queries;
     private readonly List<IAttributeQuery> _attributes;
+    private readonly List<Alias> _aliases;
+    private readonly IDtoProgramContextAccessor _dtos;
 
     public Query(
         Dictionary<IDeclaration, IPkbDto> table,
         IEnumerable<IQueryDeclaration> queries,
-        List<IAttributeQuery> attributes
+        List<IAttributeQuery> attributes,
+        List<Alias> aliases,
+        IDtoProgramContextAccessor dtos
     )
     {
         _table = table;
         _attributes = attributes;
+        _aliases = aliases;
+        _dtos = dtos;
 
         _queries = queries
             .Select(q =>
@@ -98,7 +104,7 @@ public class Query
                 table.Add(k, v);
             }
 
-            var query = new Query(table, restOfQueries, _attributes);
+            var query = new Query(table, restOfQueries, _attributes, _aliases, _dtos);
             result.Add(query);
         }
 
@@ -128,9 +134,56 @@ public class Query
             .Where(q => !booleanQueries.Contains(q))
             .ToList();
 
+        var existingAliases = _aliases
+            .Where(a =>
+            {
+                var (from, to) = a;
+                return _table.ContainsKey(from) || _table.ContainsKey(to);
+            })
+            .ToList();
+
+        var newCache = existingAliases.Select(a =>
+            {
+                var (from, to) = a;
+                if (_table.TryGetValue(from, out var fromValue) && !_table.ContainsKey(to))
+                {
+                    var toCache = to.Translate(fromValue, _dtos);
+                    return toCache
+                        .Select(c => new Dictionary<IDeclaration, IPkbDto>(_table) { { to, c } })
+                        .ToList();
+                }
+
+                if (_table.TryGetValue(to, out var toValue) && !_table.ContainsKey(from))
+                {
+                    var fromCache = from.Translate(toValue, _dtos);
+                    return fromCache
+                        .Select(c => new Dictionary<IDeclaration, IPkbDto>(_table) { { from, c } })
+                        .ToList();
+                }
+
+                return null;
+            })
+            .WhereNotNull()
+            .SelectMany(x => x)
+            .ToList();
+
         if (Irresolvable())
         {
-            throw new IrresolvableQuery(this);
+            if (newCache.Count > 0)
+            {
+                var xd = newCache.Select(c => new Query(c, _queries, _attributes, _aliases, _dtos)).ToList();
+
+                var results = xd.Select(x => x.Execute()).WhereNotNull().SelectMany(x => x).ToList();
+
+                return results;
+            }
+
+            if (newCache is null || existingAliases.Count == 0)
+            {
+                throw new IrresolvableQuery(this);
+            }
+
+            return null;
         }
 
         if (queries.All(QueryDeclarationExtensions.IsBooleanQuery))
@@ -143,7 +196,7 @@ public class Query
             return null;
         }
 
-        var deeper = new Query(_table, queries, _attributes).Deeper().ToList();
+        var deeper = new Query(_table, queries, _attributes, _aliases, _dtos).Deeper().ToList();
         var result = deeper
             .Select(q => q.Execute())
             .WhereNotNull()
@@ -260,7 +313,7 @@ public class QueryOrganizer : IQueryOrganizer
         foreach (var input in inputs)
         {
             var table = new Dictionary<IDeclaration, IPkbDto> { { select, input } };
-            var query = new Query(table, _queries, _attributes);
+            var query = new Query(table, _queries, _attributes, _aliases, _context);
 
             if (query.Irresolvable())
             {
@@ -303,34 +356,12 @@ public class QueryOrganizer : IQueryOrganizer
             }
         }
 
-        var selectValues = ApplyAliases(results)
+        var selectValues = results
             .Select(x => x[select])
             .ToHashSet();
 
         return selectValues;
     }
-
-    private IEnumerable<Dictionary<IDeclaration, IPkbDto>> ApplyAliases(
-        IEnumerable<Dictionary<IDeclaration, IPkbDto>> results
-    ) => results
-        .Where(d =>
-        {
-            foreach (var alias in _aliases)
-            {
-                var (from, to) = alias;
-                if (!d.TryGetValue(from, out var fromValue) || !d.TryGetValue(to, out var toValue))
-                {
-                    continue;
-                }
-
-                if (new PkbDtoComparer().Equals(fromValue, toValue))
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        });
 
     public bool OrganizeBoolean()
     {
@@ -363,7 +394,7 @@ public class QueryOrganizer : IQueryOrganizer
             throw new NotImplementedException();
         }
 
-        var query = new Query(new Dictionary<IDeclaration, IPkbDto>(), _queries, _attributes);
+        var query = new Query(new Dictionary<IDeclaration, IPkbDto>(), _queries, _attributes, _aliases, _context);
 
         return query.Execute() is not null;
     }
