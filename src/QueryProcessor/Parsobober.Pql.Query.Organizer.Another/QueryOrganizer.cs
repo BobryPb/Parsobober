@@ -138,6 +138,11 @@ public class QueryOrganizer : IQueryOrganizer
         return result.Any();
     }
 
+    public IEnumerable<Dictionary<IDeclaration, IPkbDto>> OrganizerTuple(IEnumerable<IDeclaration> selects)
+    {
+        throw new NotImplementedException();
+    }
+
     private bool RemoveBooleanQueries()
     {
         var booleans = _queries

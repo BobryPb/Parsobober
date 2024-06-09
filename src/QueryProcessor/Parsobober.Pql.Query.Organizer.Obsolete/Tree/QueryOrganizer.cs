@@ -53,6 +53,11 @@ internal class QueryOrganizer(
         return result;
     }
 
+    public IEnumerable<Dictionary<IDeclaration, IPkbDto>> OrganizerTuple(IEnumerable<IDeclaration> selects)
+    {
+        throw new NotImplementedException();
+    }
+
     /// <summary>
     /// Creates query tree with given select statement.
     /// </summary>

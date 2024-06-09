@@ -89,6 +89,11 @@ public class QueryOrganizer : IQueryOrganizer
         return ResolveBooleanRoutes(_queries, cache);
     }
 
+    public IEnumerable<Dictionary<IDeclaration, IPkbDto>> OrganizerTuple(IEnumerable<IDeclaration> selects)
+    {
+        throw new NotImplementedException();
+    }
+
     private bool ResolveBooleanRoutes(List<IQueryDeclaration> rest, Cache cache)
     {
         if (rest.Count == 0)

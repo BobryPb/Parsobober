@@ -209,6 +209,11 @@ public class QueryOrganizer : IQueryOrganizer
         return result;
     }
 
+    public IEnumerable<Dictionary<IDeclaration, IPkbDto>> OrganizerTuple(IEnumerable<IDeclaration> selects)
+    {
+        throw new NotImplementedException();
+    }
+
     private void ProcessQuery(IDeclaration currentSelect, IQueryDeclaration query)
     {
         var (left, right) = (query.Left, query.Right);
