@@ -47,7 +47,7 @@ public class WierdTests() : BaseTestClass(Code.ZadanieDomowe1)
     [InlineData("""
                 assign a, a1; variable v; stmt s;
                 Select a1 such that Parent(a,s) and Modifies(a,"x") and Follows(1,2) and Uses(a1, v)
-                """, "")]
+                """, "None")]
     public void WierdTest(string query, string expected)
     {
         var result = App.Query(query);

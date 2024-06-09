@@ -16,14 +16,22 @@ public class Query
 
     private readonly Dictionary<IDeclaration, IPkbDto> _table;
     private readonly ImmutableHashSet<IQueryDeclaration> _queries;
+    private readonly List<IAttributeQuery> _attributes;
 
-    public Query(Dictionary<IDeclaration, IPkbDto> table, IEnumerable<IQueryDeclaration> queries)
+    public Query(
+        Dictionary<IDeclaration, IPkbDto> table,
+        IEnumerable<IQueryDeclaration> queries,
+        List<IAttributeQuery> attributes
+    )
     {
         _table = table;
+        _attributes = attributes;
 
         _queries = queries
             .Select(q =>
             {
+                _attributes.ForEach(a => q = a.ApplyAttribute(q));
+
                 var query = q;
                 if (q.Left is IDeclaration left && _table.TryGetValue(left, out var valueLeft))
                 {
@@ -80,7 +88,7 @@ public class Query
                 table.Add(k, v);
             }
 
-            var query = new Query(table, restOfQueries);
+            var query = new Query(table, restOfQueries, _attributes);
             result.Add(query);
         }
 
@@ -125,7 +133,7 @@ public class Query
             return null;
         }
 
-        var deeper = new Query(_table, queries).Deeper().ToList();
+        var deeper = new Query(_table, queries, _attributes).Deeper().ToList();
         var result = deeper
             .Select(q => q.Execute())
             .WhereNotNull()
@@ -183,9 +191,20 @@ public class QueryOrganizer : IQueryOrganizer
         _attributes = attributes;
     }
 
+    private IEnumerable<IPkbDto> ApplyAttribute(IDeclaration select, IEnumerable<IPkbDto> input)
+    {
+        var attribute = _attributes.FirstOrDefault(a => a.Declaration == select);
+        if (attribute is null)
+        {
+            return input;
+        }
+
+        return attribute.ApplyAttribute(input);
+    }
+
     public IEnumerable<IPkbDto> Organize(IDeclaration select)
     {
-        var inputs = select.ExtractFromContext(_context);
+        var inputs = ApplyAttribute(select, select.ExtractFromContext(_context));
 
         // there is no query with select
         if (_queries.All(q => q.Left != select && q.Right != select))
@@ -202,7 +221,7 @@ public class QueryOrganizer : IQueryOrganizer
         foreach (var input in inputs)
         {
             var table = new Dictionary<IDeclaration, IPkbDto> { { select, input } };
-            var query = new Query(table, _queries);
+            var query = new Query(table, _queries, _attributes);
 
             if (query.Irresolvable())
             {
@@ -249,7 +268,7 @@ public class QueryOrganizer : IQueryOrganizer
             return result.Any();
         }
 
-        var query = new Query(new Dictionary<IDeclaration, IPkbDto>(), _queries);
+        var query = new Query(new Dictionary<IDeclaration, IPkbDto>(), _queries, _attributes);
 
         return query.Execute() is not null;
     }
