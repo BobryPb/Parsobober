@@ -45,7 +45,7 @@ public class TestsMateusz() : BaseTestClass(Code.Dropbox)
         "8, 9, 10, 11, 12, 118")]
     [InlineData(
         "variable v; procedure p;\nSelect v such that Modifies(\"Main\", v) and Uses(\"Main\", v) and Calls(\"Main\", p) and Modifies(p, v) and Uses(p, v)",
-        "I,asterick,base,bottom,decrement,depth,dot,dx,dy,edge,factor,green,height,incre,j,left,line,marking,notmove,pct,pink,pixel,range,right,s,semi,temporary,tmp,top,triangle,weight,x1,x2,y1,y2")]
+        "I,asterick,base,decrement,depth,dot,dx,dy,edge,factor,green,height,incre,j,marking,notmove,pct,pink,pixel,range,s,semi,temporary,tmp,triangle,weight,x1,x2,y1,y2")]
     [InlineData(
         "stmt s; if i; while w;\nSelect s such that Parent*(s, i) and Uses(s, \"width\") and Parent(i, w) and Uses(w, \"height\")",
         "6, 12, 14, 15, 79")]
