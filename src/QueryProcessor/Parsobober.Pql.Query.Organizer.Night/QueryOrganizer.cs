@@ -6,6 +6,7 @@ using Parsobober.Pql.Query.Arguments;
 using Parsobober.Pql.Query.Queries;
 using Parsobober.Shared;
 using Parsobober.Pql.Query.Queries.Abstractions;
+using Parsobober.Pql.Query.Queries.With;
 using Alias = (Parsobober.Pql.Query.Arguments.IDeclaration, Parsobober.Pql.Query.Arguments.IDeclaration);
 
 namespace Parsobober.Pql.Query.Organizer.Night;
@@ -31,7 +32,15 @@ public class Query
         _queries = queries
             .Select(q =>
             {
-                _attributes.ForEach(a => q = a.ApplyAttribute(q));
+                _attributes.ForEach(a =>
+                {
+                    if (a.Declaration is IStatementDeclaration.Call)
+                    {
+                        return;
+                    }
+
+                    q = a.ApplyAttribute(q);
+                });
 
                 var query = q;
                 if (q.Left is IDeclaration left && _table.TryGetValue(left, out var valueLeft))
@@ -280,6 +289,19 @@ public class QueryOrganizer : IQueryOrganizer
             }
         }
 
+        // manualne objeście call.procName
+        var callAttributes = _attributes
+            .Where(a => a.Declaration is IStatementDeclaration.Call);
+
+        foreach (var a in callAttributes)
+        {
+            if (a is WithQueryFactory.ProcedureName p)
+            {
+                results = results
+                    .Where(x => x.Values.Any(v => v is Call c && c.ProcedureName == p.Name))
+                    .ToList();
+            }
+        }
 
         var selectValues = ApplyAliases(results)
             .Select(x => x[select])

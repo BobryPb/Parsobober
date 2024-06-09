@@ -7,7 +7,7 @@ using Parsobober.Pql.Query.Queries.Exceptions;
 
 namespace Parsobober.Pql.Query.Queries.With;
 
-internal class WithQueryFactory(IProgramContextAccessor accessor)
+public class WithQueryFactory(IProgramContextAccessor accessor)
 {
     public WithQuery Create(IDeclaration declaration, string attribute, string value)
     {
@@ -45,9 +45,11 @@ internal class WithQueryFactory(IProgramContextAccessor accessor)
         }
     }
 
-    private class ProcedureName(IDeclaration declaration, string name, IProgramContextAccessor accessor)
+    public class ProcedureName(IDeclaration declaration, string name, IProgramContextAccessor accessor)
         : WithQuery(declaration)
     {
+        public string Name => name;
+
         public override IEnumerable<IPkbDto> Do()
         {
             if (accessor.ProceduresDictionary.TryGetValue(name, out var procedure))
